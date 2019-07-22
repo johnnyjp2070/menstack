@@ -32,6 +32,8 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
+app.use(express.static(__dirname + '/public'))
+
 //LOad view engine
 
 app.set('views', './views')
@@ -55,8 +57,16 @@ app.get('/', function(req, res) {
 //Add route
 
 app.get('/articles/add', function(req, res) {
-  res.render('./article.pug', {
+  res.render('./add-article.pug', {
     title: 'Add Article'
+  })
+})
+//Get Single Article
+app.get('/article/:id', function(req, res) {
+  Article.findById(req.params.id, function(err, article) {
+    res.render('./article.pug', {
+      article
+    })
   })
 })
 
@@ -79,6 +89,34 @@ app.post('/articles/add', function(req, res) {
   // res.render('./article.pug', {
   //   title: 'Add Article'
   // })
+})
+
+//Get Edit Article Page
+app.get('/article/edit/:id', function(req, res) {
+  Article.findById(req.params.id, function(err, article) {
+    res.render('./edit_article.pug', {
+      title: 'Edit Article',
+      article
+    })
+  })
+})
+
+//Edit Request of Article
+app.post('/article/edit/:id', function(req, res) {
+  let article = {}
+  article.title = req.body.title
+  article.author = req.body.author
+  article.body = req.body.body
+
+  let query = { _id: req.params.id }
+
+  Article.update(query, article, function(err) {
+    if (err) {
+      console.log(err)
+    } else {
+      res.redirect('/')
+    }
+  })
 })
 
 //Start server

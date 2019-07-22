@@ -1,17 +1,6 @@
 extends layout 
 
 block content
-    h1 #{title}
-
-    form(method="POST", action='/articles/add')
-
-        .form-group
-            label Title:
-            input.form-control(name='title', type='text')
-        .form-group
-            label Author:
-            input.form-control(name='author', type='text')
-        .form-group
-            label Body:
-            textarea.form-control(name="body", cols="30", rows="10")
-        input.btn.btn-primary(type="submit", value="Submit")
+    h1=article.title
+    h5 Written by #{article.author}
+    p= article.body
