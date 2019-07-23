@@ -4,3 +4,6 @@ block content
     h1=article.title
     h5 Written by #{article.author}
     p= article.body
+    div
+        a(href="/article/edit/"+article._id).btn.btn-secondary.m-2 Edit
+        a(href="javascript:void(0);" data-id=article._id).delete-article.btn.btn-danger.m-2 Delete
