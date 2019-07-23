@@ -6,7 +6,7 @@ $(document).ready(function() {
     $.ajax({
       async: true,
       type: 'DELETE',
-      url: '/article/' + id,
+      url: '/articles/' + id,
       success: function(response) {
         alert(response)
         window.location.href = '/'
