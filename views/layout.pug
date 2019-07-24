@@ -19,6 +19,11 @@ html
                             span.sr-only (current)
                     li.nav-item
                         a.nav-link(href='/articles/add') Add Article
+                ul.navbar-nav.navbar-right.nav
+                    li.nav-item
+                        a.nav-link(href='/users/register') Register
+                    li.nav-item
+                        a.nav-link(href='/users/login') Login
         .container.mt-5
             != messages('message', locals)
             if errors
