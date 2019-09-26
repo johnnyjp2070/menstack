@@ -4,10 +4,11 @@ const router = express.Router()
 //Bring in Model
 
 let Article = require('../models/articles')
+let User = require('../models/users')
 
 //Add Articles
 
-router.get('/add', function(req, res) {
+router.get('/add', ensureAuthenticated, function(req, res) {
   res.render('./add-article.pug', {
     title: 'Add Article'
   })
@@ -15,15 +16,18 @@ router.get('/add', function(req, res) {
 //Get Single Article
 router.get('/:id', function(req, res) {
   Article.findById(req.params.id, function(err, article) {
-    res.render('./article.pug', {
-      article
+    User.findById(article.author, function(err, user) {
+      res.render('./article.pug', {
+        article,
+        author: user.name
+      })
     })
   })
 })
 
 router.post('/add', function(req, res) {
   req.checkBody('title', 'Title is Required').notEmpty()
-  req.checkBody('author', 'Author is Required').notEmpty()
+  // req.checkBody('author', 'Author is Required').notEmpty()
   req.checkBody('body', 'Body is Required').notEmpty()
 
   // Get errors
@@ -38,7 +42,7 @@ router.post('/add', function(req, res) {
     let article = new Article()
 
     article.title = req.body.title
-    article.author = req.body.author
+    article.author = req.user._id
     article.body = req.body.body
 
     article.save(function(err) {
@@ -58,8 +62,12 @@ router.post('/add', function(req, res) {
 })
 
 //Get Edit Article Page
-router.get('/edit/:id', function(req, res) {
+router.get('/edit/:id', ensureAuthenticated, function(req, res) {
   Article.findById(req.params.id, function(err, article) {
+    if (article.author != req.user._id) {
+      req.flash('danger', 'Not Authorized')
+      res.redirect('/')
+    }
     res.render('./edit_article.pug', {
       title: 'Edit Article',
       article
@@ -96,5 +104,16 @@ router.delete('/:id', function(req, res) {
     }
   })
 })
+
+// Access Control
+
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next()
+  } else {
+    req.flash('danger', 'Please Login')
+    res.redirect('/users/login')
+  }
+}
 
 module.exports = router

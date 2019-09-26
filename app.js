@@ -96,7 +96,7 @@ app.get('*', function(req, res, next) {
 })
 
 //Home Route
-app.get('/', function(req, res) {
+app.get('/', ensureAuthenticated, function(req, res) {
   Article.find(function(err, articles) {
     if (err) {
       console.log(err)
@@ -112,6 +112,15 @@ app.get('/', function(req, res) {
 })
 
 //Add route
+
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next()
+  } else {
+    req.flash('danger', 'Please Login')
+    res.redirect('/users/login')
+  }
+}
 
 //Roouter
 
