@@ -6,6 +6,7 @@ const flash = require('connect-flash')
 const session = require('express-session')
 const config = require('./config/database')
 const passport = require('passport')
+var port    =   process.env.PORT || 3000;
 
 mongoose.connect(config.database)
 let db = mongoose.connection
@@ -130,6 +131,6 @@ app.use('/articles', articles)
 app.use('/users', users)
 
 //Start server
-app.listen(3000, function() {
+app.listen(port, function() {
   console.log('Server started on port 3000')
 })
